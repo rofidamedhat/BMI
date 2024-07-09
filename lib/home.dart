@@ -9,6 +9,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool isMale = false;
+  String selectedGender = '';
+  double chosenHeight = 150.0;
+  int selectedWeight = 50;
+  int selectedAge = 35;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,35 +35,21 @@ class _HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _containerWidget(
-                    context, _genderType(context, Icons.male, 'Male')),
-                _containerWidget(
-                    context, _genderType(context, Icons.female, 'Female')),
+                _genderType('Male'),
+                _genderType('Female'),
               ],
             ),
             const SizedBox(height: 20),
-            Container(
-              height: MediaQuery.sizeOf(context).height * .25,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(
-                    25,
-                  ),
-                ),
-              ),
-              child: _calcHeight(),
-            ),
+            _calcHeight(),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _containerWidget(context, _controlWeightAndAge('Weight', '60')),
-                _containerWidget(context, _controlWeightAndAge('Age', '50')),
+                _controlWeightAndAge(context, 'Weight'),
+                _controlWeightAndAge(context, 'Age'),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
             Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(
@@ -72,7 +64,12 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const Result(),
+                      builder: (context) => Result(
+                        genderType: selectedGender,
+                        selectedHeight: chosenHeight,
+                        selectedWeight: selectedWeight,
+                        selectedAge: selectedAge,
+                      ),
                     ),
                   );
                 },
@@ -93,10 +90,52 @@ class _HomeState extends State<Home> {
     );
   }
 
-  _containerWidget(BuildContext context, Widget contentWidget) {
+  Widget _genderType(String type) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isMale = type == 'Male' ? true : false;
+          selectedGender = type;
+        });
+        print(selectedGender);
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * .22,
+        width: MediaQuery.of(context).size.height * .22,
+        decoration: BoxDecoration(
+          color: (isMale && type == 'Male') ||
+                  (isMale == false && type == 'Female')
+              ? Colors.teal
+              : Colors.blueGrey,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(
+              25,
+            ),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Icon(type == 'Male' ? Icons.male : Icons.female,
+                size: MediaQuery.sizeOf(context).height * .1),
+            Text(
+              type == 'Male' ? 'Male' : 'Female',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _calcHeight() {
     return Container(
-      height: MediaQuery.of(context).size.height * .22,
-      width: MediaQuery.of(context).size.height * .22,
+      height: MediaQuery.sizeOf(context).height * .25,
+      width: double.infinity,
       decoration: const BoxDecoration(
         color: Colors.blueGrey,
         borderRadius: BorderRadius.all(
@@ -105,113 +144,129 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      child: contentWidget,
-    );
-  }
-
-  Widget _genderType(BuildContext context, IconData icon, String text) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Icon(icon, size: MediaQuery.sizeOf(context).height * .1),
-        Text(
-          text,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _controlWeightAndAge(String text, String value) {
-    return Column(
-      children: [
-        Text(
-          text,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.black,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 35,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _customButton(context, Icons.add),
-            const SizedBox(width: 15),
-            _customButton(context, Icons.remove),
-            const SizedBox(height: 15),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _calcHeight() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text(
-          'Height',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Colors.black,
-          ),
-        ),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              ' 170.0 ',
-              style: TextStyle(
-                fontSize: 35,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Height',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: Colors.black,
             ),
-            Text(
-              'CM',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${chosenHeight.toStringAsFixed(1)} ',
+                style: const TextStyle(
+                  fontSize: 35,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
-        ),
-        Slider(
-          value: 150,
-          onChanged: (val) {},
-          min: 90,
-          max: 220,
-        ),
-      ],
+              const Text(
+                'CM',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Slider(
+            value: chosenHeight,
+            onChanged: (val) {
+              setState(() {
+                chosenHeight = val;
+              });
+              print(chosenHeight.toStringAsFixed(1));
+            },
+            min: 90,
+            max: 220,
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _customButton(BuildContext context, IconData icon) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
+  Widget _controlWeightAndAge(BuildContext context, String type) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      height: MediaQuery.of(context).size.height * .22,
+      width: MediaQuery.of(context).size.height * .22,
+      decoration: const BoxDecoration(
+        color: Colors.blueGrey,
+        borderRadius: BorderRadius.all(
+          Radius.circular(25),
         ),
       ),
-      child: Icon(icon),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            type == 'Weight' ? 'Weight' : 'Age',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: Colors.black,
+            ),
+          ),
+          Text(
+            type == 'Weight' ? '$selectedWeight' : '$selectedAge',
+            style: const TextStyle(
+              fontSize: 35,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FloatingActionButton(
+                mini: true,
+                onPressed: () {
+                  setState(() {
+                    type == 'Weight' ? selectedWeight++ : selectedAge++;
+                  });
+
+                  print(selectedWeight);
+                  print(selectedAge);
+                },
+                heroTag:
+                    type == 'Weight' ? 'selectedWeight++' : 'selectedAge++',
+                backgroundColor: Colors.teal,
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.black,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(width: 10),
+              FloatingActionButton(
+                mini: true,
+                onPressed: () {
+                  setState(() {
+                    type == 'Weight' ? selectedWeight-- : selectedAge--;
+                  });
+                  print(selectedWeight);
+                  print(selectedAge);
+                },
+                heroTag:
+                    type == 'Weight' ? 'selectedWeight--' : 'selectedAge--',
+                backgroundColor: Colors.teal,
+                child: const Icon(
+                  Icons.remove,
+                  color: Colors.black,
+                  size: 30,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
