@@ -1,7 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-class Result extends StatefulWidget {
+class Result extends StatelessWidget {
   final String genderType;
   final double selectedHeight;
   final int selectedWeight;
@@ -15,16 +14,68 @@ class Result extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<Result> createState() => _ResultState();
-}
-
-class _ResultState extends State<Result> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Result is :'),
+        title: const Text('Result'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                'Gender : $genderType',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'Healthiness : ${healthOfBMI(caclcBMI())}',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'Result : ${caclcBMI().toStringAsFixed(1)}',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'Age : $selectedAge',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  double caclcBMI() {
+    final heightInMeters = selectedHeight / 100;
+    final result = selectedWeight / (heightInMeters * heightInMeters);
+    return result;
+  }
+
+  String healthOfBMI(double result) {
+    if (result <= 18.5) {
+      return 'UnderWeight';
+    } else if (result > 18.5 && result <= 24.5) {
+      return 'Normal';
+    } else if (result >= 25 && result <= 29.5) {
+      return 'OverWeight';
+    } else {
+      return 'obese';
+    }
   }
 }

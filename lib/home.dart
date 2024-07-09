@@ -10,7 +10,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isMale = false;
-  String selectedGender = '';
+  String selectedGender = 'Female';
   double chosenHeight = 150.0;
   int selectedWeight = 50;
   int selectedAge = 35;
@@ -97,7 +97,6 @@ class _HomeState extends State<Home> {
           isMale = type == 'Male' ? true : false;
           selectedGender = type;
         });
-        print(selectedGender);
       },
       child: Container(
         height: MediaQuery.of(context).size.height * .22,
@@ -182,7 +181,6 @@ class _HomeState extends State<Home> {
               setState(() {
                 chosenHeight = val;
               });
-              print(chosenHeight.toStringAsFixed(1));
             },
             min: 90,
             max: 220,
@@ -231,9 +229,6 @@ class _HomeState extends State<Home> {
                   setState(() {
                     type == 'Weight' ? selectedWeight++ : selectedAge++;
                   });
-
-                  print(selectedWeight);
-                  print(selectedAge);
                 },
                 heroTag:
                     type == 'Weight' ? 'selectedWeight++' : 'selectedAge++',
@@ -251,8 +246,6 @@ class _HomeState extends State<Home> {
                   setState(() {
                     type == 'Weight' ? selectedWeight-- : selectedAge--;
                   });
-                  print(selectedWeight);
-                  print(selectedAge);
                 },
                 heroTag:
                     type == 'Weight' ? 'selectedWeight--' : 'selectedAge--',
